@@ -1,7 +1,6 @@
 package log
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"os"
@@ -22,10 +21,6 @@ func TestStoreAppendRead(t *testing.T) {
 	require.NoError(t, err)
 
 	testAppend(t, s)
-	//r, _ := s.Read(0)
-	//fmt.Printf("File %v \n", r )
-	//fmt.Printf("Size %v \n", s.buf.Size())
-	//fmt.Printf("Size %v \n", s.size)
 	testRead(t, s)
 	testReadAt(t, s)
 
@@ -38,11 +33,6 @@ func testAppend(t *testing.T, s *store) {
 	t.Helper()
 	for i := uint64(1); i < 4; i++ {
 		n, pos, err := s.Append(write)
-		fmt.Printf("n %v, pos: %v \n", n, pos)
-
-		r, _ := s.Read(0)
-		fmt.Printf("File %v \n", r)
-		fmt.Printf("Availabel %v \n", s.buf.Available())
 		require.NoError(t, err)
 		require.Equal(t, pos+n, width*i)
 	}
@@ -53,15 +43,6 @@ func testRead(t *testing.T, s *store) {
 	var pos uint64
 	for i := uint64(1); i < 4; i++ {
 		read, err := s.Read(pos)
-		read1, err := s.Read(pos + 2*width)
-		fmt.Println()
-		fmt.Printf("File %v \n", write)
-		fmt.Printf("File %v \n", read)
-		fmt.Printf("File1 %v \n", read1)
-		fmt.Printf("POS %v \n", pos)
-		fmt.Printf("Size %v \n", s.buf.Size())
-		fmt.Printf("Size %v \n", s.size)
-		fmt.Println()
 		require.NoError(t, err)
 		require.Equal(t, write, read)
 		pos += width
