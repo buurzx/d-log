@@ -10,10 +10,12 @@ type Log struct {
 	records []Record
 }
 
+//NewLog instantiating Log
 func NewLog() *Log {
 	return &Log{}
 }
 
+//Append record to existing slice and responds with record offset
 func (l *Log) Append(record Record) (uint64, error) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -22,6 +24,7 @@ func (l *Log) Append(record Record) (uint64, error) {
 	return record.Offset, nil
 }
 
+//Read from log from a given offset
 func (l *Log) Read(offset uint64) (Record, error) {
 	l.mu.Lock()
 	defer l.mu.Unlock()

@@ -15,6 +15,7 @@ const (
 	lenWidth = 8 // number of bytes used to store the record’s length
 )
 
+//wrapper around a file
 type store struct {
 	*os.File
 	mu   sync.Mutex
@@ -22,6 +23,7 @@ type store struct {
 	size uint64
 }
 
+//newStore instantiating store with a given file
 func newStore(f *os.File) (*store, error) {
 	fi, err := os.Stat(f.Name())
 	if err != nil {
@@ -36,10 +38,12 @@ func newStore(f *os.File) (*store, error) {
 	}, nil
 }
 
+//Append record bytes to log instance
 func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	pos = s.size
+	//writes length of data
 	if err := binary.Write(s.buf, enc, uint64(len(p))); err != nil {
 		return 0, 0, err
 	}
@@ -54,6 +58,10 @@ func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	return uint64(w), pos, nil
 }
 
+//1|2|3|4|5|6|7|L|e|x|a|m|
+// L - length of next record
+
+//Read record bytes from log file from given positon
 func (s *store) Read(pos uint64) ([]byte, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -65,7 +73,7 @@ func (s *store) Read(pos uint64) ([]byte, error) {
 	if _, err := s.File.ReadAt(size, int64(pos)); err != nil {
 		return nil, err
 	}
-
+	//read size of record
 	b := make([]byte, enc.Uint64(size))
 	if _, err := s.File.ReadAt(b, int64(pos+lenWidth)); err != nil {
 		return nil, err
@@ -74,6 +82,7 @@ func (s *store) Read(pos uint64) ([]byte, error) {
 	return b, nil
 }
 
+//ReadAt wrapper for file read at
 func (s *store) ReadAt(p []byte, off int64) (int, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -84,6 +93,7 @@ func (s *store) ReadAt(p []byte, off int64) (int, error) {
 	return s.File.ReadAt(p, off)
 }
 
+//Close file
 func (s *store) Close() error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+//NewHTTPServer is a wrapper for http server
 func NewHTTPServer(addr string) *http.Server {
 	httpsrv := newHTTPServer()
 	r := mux.NewRouter()
@@ -44,6 +45,7 @@ type ConsumeResponse struct {
 	Record Record `json:"record"`
 }
 
+// handleProduce appends a new log record to a log, besides unmarshaling and marshaling data from request
 func (h *httpServer) handleProduce(w http.ResponseWriter, r *http.Request) {
 	var req ProduceRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -66,6 +68,7 @@ func (h *httpServer) handleProduce(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// handleConsume reads log record from the log, besides unmarshaling and marshaling data from request
 func (h *httpServer) handleConsume(w http.ResponseWriter, r *http.Request) {
 	var req ConsumeRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
