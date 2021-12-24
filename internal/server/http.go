@@ -45,7 +45,7 @@ type ConsumeResponse struct {
 	Record Record `json:"record"`
 }
 
-// handleProduce appends a new log record to a log, besides unmarshaling and marshaling data from request
+// handleProduce appends a new log record to a log, besides unmarshalling and marshaling data from request
 func (h *httpServer) handleProduce(w http.ResponseWriter, r *http.Request) {
 	var req ProduceRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -68,7 +68,7 @@ func (h *httpServer) handleProduce(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleConsume reads log record from the log, besides unmarshaling and marshaling data from request
+// handleConsume reads log record from the log, besides unmarshalling and marshaling data from request
 func (h *httpServer) handleConsume(w http.ResponseWriter, r *http.Request) {
 	var req ConsumeRequest
 	err := json.NewDecoder(r.Body).Decode(&req)

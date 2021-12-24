@@ -61,7 +61,7 @@ func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 //1|2|3|4|5|6|7|L|e|x|a|m|
 // L - length of next record
 
-//Read record bytes from log file from given positon
+//Read record bytes from log file from given position
 func (s *store) Read(pos uint64) ([]byte, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
